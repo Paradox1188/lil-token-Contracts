@@ -5,7 +5,7 @@ import "contracts/interfaces/IVoter.sol";
 import "contracts/interfaces/ITOKENFees.sol";
 import "contracts/interfaces/IPlugin.sol";
 
-contract ControlPanel {
+contract Controller {
 
     /*----------  CONSTANTS  --------------------------------------------*/
 
