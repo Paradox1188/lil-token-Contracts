@@ -11,8 +11,18 @@ import "contracts/interfaces/IBribe.sol";
 import "contracts/interfaces/IVoter.sol";
 import "contracts/interfaces/IPlugin.sol";
 
-interface IEACAggregatorProxy {
+interface IChainlinkOracle {
     function latestAnswer() external view returns (uint256);
+}
+
+interface IPythOracle {
+    struct Price {
+        int64 price;
+        uint64 conf;
+        int32 expo;
+        uint256 publishTime;
+    }
+    function getPriceUnsafe(bytes32 id) external view returns (Price memory price);
 }
 
 contract Multicall {
@@ -20,7 +30,10 @@ contract Multicall {
     /*===================================================================*/
     /*===========================  SETTINGS  ============================*/
 
-    address public constant ORACLE = 0x0715A7794a1dc8e42615F059dD6e406A6594651A;
+    address public constant ORACLE = 0x0000000000000000000000000000000000000000;
+    uint256 public constant PROVIDER = 0;
+
+    bytes32 public constant ID = 0x0;
 
     /*===========================  END SETTINGS  ========================*/
     /*===================================================================*/
@@ -157,7 +170,13 @@ contract Multicall {
     /*----------  VIEW FUNCTIONS  ---------------------------------------*/
 
     function getBasePrice() external view returns (uint256) {
-        return IEACAggregatorProxy(ORACLE).latestAnswer() * 1e18 / 1e8;
+        if (PROVIDER == 0) {
+            return IChainlinkOracle(ORACLE).latestAnswer() * 1e18 / 1e8;
+        } else if (PROVIDER == 1) {
+            return uint256(IPythOracle(ORACLE).getPriceUnsafe(ID).price) * 1e18 / 1e8;
+        } else {
+            return 1e18;
+        }
     }
 
     function swapCardData() external view returns (SwapCard memory swapCard) {
