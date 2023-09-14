@@ -31,7 +31,7 @@ contract Multicall {
     /*===========================  SETTINGS  ============================*/
 
     address public constant ORACLE = 0x0000000000000000000000000000000000000000;
-    uint256 public constant PROVIDER = 0;
+    uint256 public constant PROVIDER = 0; // 0 = Chainlink, 1 = Pyth
 
     bytes32 public constant ID = 0x0;
 
