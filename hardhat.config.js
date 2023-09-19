@@ -41,7 +41,7 @@ module.exports = {
     },
     mainnet: {
       url: RPC_URL,
-      chainId: 80001,
+      chainId: /*UPDATE chainId*/ 80001, /*END UPDATE*/
       accounts: [PRIVATE_KEY],
     },
   },

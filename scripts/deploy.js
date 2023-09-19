@@ -410,7 +410,6 @@ async function setUpSystem(wallet) {
 }
 
 async function transferOwnership() {
-    console.log('Starting System Set Up');
 
     await minter.setTeam(MULTISIG);
     await sleep(5000);
