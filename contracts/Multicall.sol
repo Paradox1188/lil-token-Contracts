@@ -31,14 +31,15 @@ contract Multicall {
     /*===========================  SETTINGS  ============================*/
 
     address public constant ORACLE = 0x0000000000000000000000000000000000000000;
-    uint256 public constant PROVIDER = 0; // 0 = Chainlink, 1 = Pyth
-
-    bytes32 public constant ID = 0x0;
+    bytes32 public constant FEED_ID = 0x0;
 
     /*===========================  END SETTINGS  ========================*/
     /*===================================================================*/
 
     /*----------  CONSTANTS  --------------------------------------------*/
+
+    uint256 public constant DIVISOR = 10000;
+    uint256 public constant PRECISION = 1e18;
 
     /*----------  STATE VARIABLES  --------------------------------------*/
 
@@ -49,9 +50,7 @@ contract Multicall {
     address public immutable VTOKEN;
     address public immutable rewarder;
 
-    uint256 public immutable FEE
-    uint256 public immutable DIVISOR;
-    uint256 public immutable PRECISION;
+    uint256 public immutable FEE;
 
     struct SwapCard {
         uint256 frBASE;
@@ -163,19 +162,16 @@ contract Multicall {
         rewarder = _rewarder;
 
         FEE = ITOKEN(TOKEN).PROTOCOL_FEE();
-        DIVISOR = ITOKEN(TOKEN).DIVISOR();
-        PRECISION = ITOKEN(TOKEN).PRECISION();
     }
 
     /*----------  VIEW FUNCTIONS  ---------------------------------------*/
 
-    function getBasePrice() external view returns (uint256) {
-        if (PROVIDER == 0) {
+    function getBasePrice() public view returns (uint256) {
+        if (FEED_ID == 0x0) {
             return IChainlinkOracle(ORACLE).latestAnswer() * 1e18 / 1e8;
-        } else if (PROVIDER == 1) {
-            return uint256(IPythOracle(ORACLE).getPriceUnsafe(ID).price) * 1e18 / 1e8;
         } else {
-            return 1e18;
+            int64 price = IPythOracle(ORACLE).getPriceUnsafe(FEED_ID).price;
+            return uint256(int256(price)) * 1e18 / 1e8;  
         }
     }
 

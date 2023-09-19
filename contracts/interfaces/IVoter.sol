@@ -20,4 +20,5 @@ interface IVoter {
     function totalWeight() external view returns (uint256);
     function votes(address account, address pool) external view returns (uint256);
     function lastVoted(address account) external view returns (uint256);
+    function minter() external view returns (address);
 }

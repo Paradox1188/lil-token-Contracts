@@ -5,7 +5,7 @@ const hre = require("hardhat")
 /*===================================================================*/
 /*===========================  SETTINGS  ============================*/
 
-const MARKET_RESERVES = '1000';     // 1000 TOKEN in market reserves
+const MARKET_RESERVES = '100000';   // 1000 TOKEN in market reserves
 const TEAM_ALLOCATION = '20';       // 20% of initial supply for the team
 
 const BASE_ADDRESS = '0x0000000000000000000000000000000000000000';  // BASE Token Address (eg WETH on zkEVM)
@@ -256,10 +256,10 @@ async function deployMinter() {
 
 async function printVotingAddresses() {
     console.log('**************************************************************');
-    console.log("Voter: ", voter.address);
-    console.log("Minter: ", minter.address);
     console.log("GaugeFactory: ", gaugeFactory.address);
     console.log("BribeFactory: ", bribeFactory.address);
+    console.log("Voter: ", voter.address);
+    console.log("Minter: ", minter.address);
     console.log('**************************************************************');
 }
 
@@ -371,13 +371,13 @@ async function verifyController() {
     console.log("Controller Verified");
 }
 
-async function setUpSystem() {
+async function setUpSystem(wallet) {
     console.log('Starting System Set Up');
 
     let amount = await OTOKEN.totalSupply();
     amount = amount.mul(TEAM_ALLOCATION).div(200);
     await OTOKEN.transfer(BUILDER_ADDRESS, amount);
-    amount = await OTOKEN.totalSupply();
+    amount = await OTOKEN.balanceOf(wallet);
     await OTOKEN.transfer(MULTISIG, amount);
     console.log("OTOKEN Allocated");
 
@@ -522,7 +522,7 @@ async function main() {
     //===================================================================
 
     // console.log('Starting System Set Up');
-    // await setUpSystem();
+    // await setUpSystem(wallet.address);
     // console.log("System Set Up")
 
     //===================================================================
