@@ -5,8 +5,7 @@ const hre = require("hardhat")
 /*===================================================================*/
 /*===========================  SETTINGS  ============================*/
 
-const MARKET_RESERVES = '100000';   // 1000 TOKEN in market reserves
-const TEAM_ALLOCATION = '20';       // 20% of initial supply for the team
+const MARKET_RESERVES = '1000';   // 1000 TOKEN in market reserves
 
 const BASE_ADDRESS = '0x0000000000000000000000000000000000000000';  // BASE Token Address (eg WETH on zkEVM)
 const MULTISIG = '0x0000000000000000000000000000000000000000';      // Multisig Address
@@ -375,8 +374,9 @@ async function setUpSystem(wallet) {
     console.log('Starting System Set Up');
 
     let amount = await OTOKEN.totalSupply();
-    amount = amount.mul(TEAM_ALLOCATION).div(200);
-    await OTOKEN.transfer(BUILDER_ADDRESS, amount);
+    amount = amount.div(10);
+    await OTOKEN.approve(VTOKEN.address, amount);
+    await VTOKEN.burnFor(BUILDER_ADDRESS, amount);
     amount = await OTOKEN.balanceOf(wallet);
     await OTOKEN.transfer(MULTISIG, amount);
     console.log("OTOKEN Allocated");
