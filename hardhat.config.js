@@ -4,6 +4,14 @@ require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-etherscan");
 require("solidity-coverage");
 
+/*===================================================================*/
+/*===========================  SETTINGS  ============================*/
+
+const CHAIN_ID = 80001; // Mumbai chain id
+
+/*===========================  END SETTINGS  ========================*/
+/*===================================================================*/
+
 config();
 const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
 const SCAN_API_KEY = process.env.SCAN_API_KEY || "";
@@ -41,7 +49,7 @@ module.exports = {
     },
     mainnet: {
       url: RPC_URL,
-      chainId: /*UPDATE chainId*/ 80001, /*END UPDATE*/
+      chainId: CHAIN_ID,
       accounts: [PRIVATE_KEY],
     },
   },
