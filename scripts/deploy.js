@@ -7,8 +7,8 @@ const hre = require("hardhat")
 
 const MARKET_RESERVES = '1000';   // 1000 TOKEN in market reserves
 
-const BASE_ADDRESS = '0x0000000000000000000000000000000000000000';  // BASE Token Address (eg WETH on zkEVM)
-const MULTISIG = '0x0000000000000000000000000000000000000000';      // Multisig Address
+const BASE_ADDRESS = '0x44D627f900da8AdaC7561bD73aA745F132450798';  // BASE Token Address (eg WETH on zkEVM)
+const MULTISIG = '0x19858F6c29eA886853dc97D1a68ABf8d4Cb07712';      // Multisig Address
 
 /*===========================  END SETTINGS  ========================*/
 /*===================================================================*/
@@ -29,17 +29,17 @@ let multicall, controller;
 
 async function getContracts() {
 
-    // OTOKENFactory = await ethers.getContractAt("contracts/OTOKENFactory.sol:OTOKENFactory", "0x0000000000000000000000000000000000000000");
-    // VTOKENFactory = await ethers.getContractAt("contracts/VTOKENFactory.sol:VTOKENFactory", "0x0000000000000000000000000000000000000000");
-    // feesFactory = await ethers.getContractAt("contracts/TOKENFeesFactory.sol:TOKENFeesFactory", "0x0000000000000000000000000000000000000000");
-    // rewarderFactory = await ethers.getContractAt("contracts/VTOKENRewarderFactory.sol:VTOKENRewarderFactory", "0x0000000000000000000000000000000000000000");
+    OTOKENFactory = await ethers.getContractAt("contracts/OTOKENFactory.sol:OTOKENFactory", "0xaB0Ab38Ade96aF42742b0030F201E05eCca127d4");
+    VTOKENFactory = await ethers.getContractAt("contracts/VTOKENFactory.sol:VTOKENFactory", "0xdCE6609d7b9c933E9aCC453EDA6713c8B9efA067");
+    feesFactory = await ethers.getContractAt("contracts/TOKENFeesFactory.sol:TOKENFeesFactory", "0xb7b7B8DF8cAF2829971329BD71D0b7127D0734be");
+    rewarderFactory = await ethers.getContractAt("contracts/VTOKENRewarderFactory.sol:VTOKENRewarderFactory", "0x43FDE9Cb7D2BD5F91e920Ea6f4206Fe3015194B2");
 
-    // TOKEN = await ethers.getContractAt("contracts/TOKEN.sol:TOKEN", "0x0000000000000000000000000000000000000000");
-    // OTOKEN = await ethers.getContractAt("contracts/OTOKENFactory.sol:OTOKEN", await TOKEN.OTOKEN());
-    // VTOKEN = await ethers.getContractAt("contracts/VTOKENFactory.sol:VTOKEN", await TOKEN.VTOKEN());
-    // fees = await ethers.getContractAt("contracts/TOKENFeesFactory.sol:TOKENFees", await TOKEN.FEES());
-    // rewarder = await ethers.getContractAt("contracts/VTOKENRewarderFactory.sol:VTOKENRewarder", await VTOKEN.rewarder());
-    // governor = await ethers.getContractAt("contracts/TOKENGovernor.sol:TOKENGovernor", "0x0000000000000000000000000000000000000000");
+    TOKEN = await ethers.getContractAt("contracts/TOKEN.sol:TOKEN", "0x51519d0758Dea1f53e5530Afc33aDdd2ce9d7d42");
+    OTOKEN = await ethers.getContractAt("contracts/OTOKENFactory.sol:OTOKEN", await TOKEN.OTOKEN());
+    VTOKEN = await ethers.getContractAt("contracts/VTOKENFactory.sol:VTOKEN", await TOKEN.VTOKEN());
+    fees = await ethers.getContractAt("contracts/TOKENFeesFactory.sol:TOKENFees", await TOKEN.FEES());
+    rewarder = await ethers.getContractAt("contracts/VTOKENRewarderFactory.sol:VTOKENRewarder", await VTOKEN.rewarder());
+    governor = await ethers.getContractAt("contracts/TOKENGovernor.sol:TOKENGovernor", "0x067Cd33e00b7719853447362654D900A68077f70");
 
     // gaugeFactory = await ethers.getContractAt("contracts/GaugeFactory.sol:GaugeFactory", "0x0000000000000000000000000000000000000000");
     // bribeFactory = await ethers.getContractAt("contracts/BribeFactory.sol:BribeFactory", "0x0000000000000000000000000000000000000000");
@@ -487,14 +487,14 @@ async function main() {
     // 5. Verify Token Contracts
     //===================================================================
 
-    // console.log('Starting Token Verification');
-    // await verifyTOKEN();
-    // await verifyOTOKEN(wallet.address);
-    // await verifyVTOKEN();
-    // await verifyTOKENFees();
-    // await verifyRewarder();
-    // await verifyGovernor();
-    // console.log("Token Contracts Verified")
+    console.log('Starting Token Verification');
+    await verifyTOKEN();
+    await verifyOTOKEN(wallet.address);
+    await verifyVTOKEN();
+    await verifyTOKENFees();
+    await verifyRewarder();
+    await verifyGovernor();
+    console.log("Token Contracts Verified")
 
     //===================================================================
     // 6. Verify Voting Contracts

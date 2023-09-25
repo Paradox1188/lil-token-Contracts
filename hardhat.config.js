@@ -1,13 +1,13 @@
 const { config } = require("dotenv");
 
 require("@nomiclabs/hardhat-waffle");
-require("@nomiclabs/hardhat-etherscan");
+require("@nomicfoundation/hardhat-verify");
 require("solidity-coverage");
 
 /*===================================================================*/
 /*===========================  SETTINGS  ============================*/
 
-const CHAIN_ID = 80001; // Mumbai chain id
+const CHAIN_ID = 84531; // Mumbai chain id
 
 /*===========================  END SETTINGS  ========================*/
 /*===================================================================*/
@@ -50,11 +50,14 @@ module.exports = {
     mainnet: {
       url: RPC_URL,
       chainId: CHAIN_ID,
+      gasPrice: 1000000000,
       accounts: [PRIVATE_KEY],
     },
   },
   etherscan: {
-    apiKey: SCAN_API_KEY
+    apiKey: {
+      baseGoerli: SCAN_API_KEY
+    }
   },
   paths: {
     sources: "./contracts",
