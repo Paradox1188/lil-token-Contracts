@@ -32,7 +32,7 @@ let TEST3, LP1, plugin3, gauge3, bribe3;
 let voter1, gaugeFactory1, bribeFactory1, multicall1, plugin4, plugin5, gauge4, bribe4, gauge5, bribe5;
 let TEST4, TEST5, LP2, LP3, BASE1;
 
-describe.only("test3", function () {
+describe("test3", function () {
     before("Initial set up", async function () {
         console.log("Begin Initialization");
   
