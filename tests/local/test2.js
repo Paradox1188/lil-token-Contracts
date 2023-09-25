@@ -29,7 +29,7 @@ let TEST2, LP0, plugin2, gauge2, bribe2;
 let TEST3, LP1, plugin3, gauge3, bribe3;
 
 
-describe("test2", function () {
+describe("local: test2", function () {
     before("Initial set up", async function () {
         console.log("Begin Initialization");
   

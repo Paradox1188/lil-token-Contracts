@@ -45,19 +45,30 @@ module.exports = {
     },
   },
   networks: {
-    hardhat: {
-    },
     mainnet: {
       url: RPC_URL,
       chainId: CHAIN_ID,
-      gasPrice: 1000000000,
       accounts: [PRIVATE_KEY],
+    },
+    hardhat: {
+      // ******* zkevm plugin testing *******
+      // chainId: 1101,
+      // forking: {
+      //   url: "https://zkevm-rpc.com",
+      //   blockNumber: 5210000,
+      // }
+      // ***********************************
+      // ******* base plugin testing *******
+      // chainId: 8453,
+      // forking: {
+      //   url: "https://mainnet.base.org",
+      //   blockNumber: 4444400,
+      // }
+      // ***********************************
     },
   },
   etherscan: {
-    apiKey: {
-      baseGoerli: SCAN_API_KEY
-    }
+    apiKey: SCAN_API_KEY,
   },
   paths: {
     sources: "./contracts",
