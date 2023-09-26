@@ -183,7 +183,7 @@ describe("zkevm: Balancer Gauge Plugin Testing", function () {
         minter = await ethers.getContractAt("Minter", minterContract.address);
         console.log("- Minter Initialized");
 
-        // initialize governanor
+        // initialize governor
         const governanceArtifact = await ethers.getContractFactory("TOKENGovernor");
         const governanceContract = await governanceArtifact.deploy(VTOKEN.address);
         governance = await ethers.getContractAt("TOKENGovernor", governanceContract.address);
