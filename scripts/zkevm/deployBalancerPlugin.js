@@ -15,11 +15,11 @@ const MATIC = '0xa2036f0538221a77A3937F1379699f44945018d0';
 const VOTER_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 // Plugin settings
-const BPT_SYMBOL = 'B-wstETH-STABLE';   // Desired symbol for BPT plugin
+const BPT_SYMBOL = 'B-wstETH-STABLE Gauge';   // Desired symbol for BPT plugin
 const BPT_ADDRESS = '0xe1F2c039a68A216dE6DD427Be6c60dEcf405762A';   // Address of BPT token
 const GAUGE_ADDRESS = '0x544BDCE27174EA8Ba829939bd3568efc6A6c9c53'; // BPT Gauge address from balancer
 const UNDERLYING_TOKENS = [WETH, WSTETH];   // Tokens in BPT
-const BRIBE_TOKENS = [USDC, MATIC];         // Reward tokens from BPT Gauge
+const GAUGE_REWARDS = [USDC, MATIC];         // Reward tokens from BPT Gauge
 
 /*===========================  END SETTINGS  ========================*/
 /*===================================================================*/
@@ -75,7 +75,7 @@ async function verifyPluginFactory() {
 
 async function deployPlugin(lpSymbol, token0Symbol, token1Symbol) {
     console.log('Starting Plugin Deployment');
-    await pluginFactory.createPlugin(BPT_ADDRESS, GAUGE_ADDRESS, UNDERLYING_TOKENS, BRIBE_TOKENS, BPT_SYMBOL, { gasPrice: ethers.gasPrice, });
+    await pluginFactory.createPlugin(BPT_ADDRESS, GAUGE_ADDRESS, UNDERLYING_TOKENS, GAUGE_REWARDS, BPT_SYMBOL, { gasPrice: ethers.gasPrice, });
     await sleep(5000);
     let pluginAddress = await pluginFactory.last_plugin();
     console.log("Plugin Deployed at:", pluginAddress);

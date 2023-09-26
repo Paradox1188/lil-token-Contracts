@@ -2,16 +2,21 @@ const { ethers } = require("hardhat");
 const { utils, BigNumber } = require("ethers")
 const hre = require("hardhat")
 
+// Tokens
+const BVM = '0xd386a121991E51Eab5e3433Bf5B1cF4C8884b47a';
+const WETH = '0x4200000000000000000000000000000000000006';
 /*===================================================================*/
 /*===========================  SETTINGS  ============================*/
+
+const MULTISIG = '0x0000000000000000000000000000000000000000';
 
 // PluginFactory settings
 const VOTER_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 // Plugin settings
-const LP_SYMBOL = 'LP-QUICK/WETH-WIDE Farm';   // Desired symbol for LP plugin
-const LP_ADDRESS = '0x686CFe074dD4ac97caC25f37552178b422041a1a';    // Address of LP token
-const LP_PID = '14';    // PoolID for LP from MasterChef
+const LP_SYMBOL = 'vLP-BVM/WETH Gauge';   // Desired symbol for LP Gauge plugin
+const LP_ADDRESS = '0x53713F956A4DA3F08B55A390B20657eDF9E0897B';    // Address of LP token
+const GAUGE_REWARDS = [BVM, WETH];
 
 /*===========================  END SETTINGS  ========================*/
 /*===================================================================*/
@@ -29,8 +34,8 @@ let plugin;
 
 async function getContracts() {
 
-    // pluginFactory = await ethers.getContractAt("contracts/plugins/zkevm/QuickSwapFarmPluginFactory.sol:QuickSwapFarmPluginFactory", "0x0000000000000000000000000000000000000000");
-    // plugin = await ethers.getContractAt("contracts/plugins/zkevm/QuickSwapFarmPluginFactory.sol:QuickSwapFarmPlugin", "0x0000000000000000000000000000000000000000");
+    // pluginFactory = await ethers.getContractAt("contracts/plugins/base/VelociGaugePluginFactory.sol:VelociGaugePluginFactory", "0x0000000000000000000000000000000000000000");
+    // plugin = await ethers.getContractAt("contracts/plugins/base/VelociGaugePluginFactory.sol:VelociGaugePlugin", "0x0000000000000000000000000000000000000000");
 
     console.log("Contracts Retrieved");
 }
@@ -40,7 +45,7 @@ async function getContracts() {
 
 async function deployPluginFactory() {
     console.log('Starting PluginFactory Deployment');
-    const pluginFactoryArtifact = await ethers.getContractFactory("BPTGaugePluginFactory");
+    const pluginFactoryArtifact = await ethers.getContractFactory("VelociGaugePluginFactory");
     const pluginFactoryContract = await pluginFactoryArtifact.deploy(VOTER_ADDRESS, { gasPrice: ethers.gasPrice, });
     pluginFactory = await pluginFactoryContract.deployed();
     await sleep(5000);
@@ -57,7 +62,7 @@ async function verifyPluginFactory() {
     console.log('Starting PluginFactory Verification');
     await hre.run("verify:verify", {
         address: pluginFactory.address,
-        contract: "contracts/plugins/zkevm/QuickSwapFarmPluginFactory.sol:QuickSwapFarmPluginFactory",
+        contract: "contracts/plugins/base/VelociGaugePluginFactory.sol:VelociGaugePluginFactory",
         constructorArguments: [
             VOTER_ADDRESS,  
         ],
@@ -67,7 +72,7 @@ async function verifyPluginFactory() {
 
 async function deployPlugin() {
     console.log('Starting Plugin Deployment');
-    await pluginFactory.createPlugin(LP_ADDRESS, LP_PID, LP_SYMBOL, { gasPrice: ethers.gasPrice, });
+    await pluginFactory.createPlugin(LP_ADDRESS, GAUGE_REWARDS, LP_SYMBOL, { gasPrice: ethers.gasPrice, });
     await sleep(5000);
     let pluginAddress = await pluginFactory.last_plugin();
     console.log("Plugin Deployed at:", pluginAddress);
@@ -80,12 +85,14 @@ async function verifyPlugin() {
     console.log('Starting Plugin Verification');
     await hre.run("verify:verify", {
         address: plugin.address,
-        contract: "contracts/plugins/zkevm/QuickSwapFarmPluginFactory.sol:QuickSwapFarmPlugin",
+        contract: "contracts/plugins/base/VelociGaugePluginFactory.sol:VelociGaugePlugin",
         constructorArguments: [
             await plugin.getUnderlyingAddress(),
-            VOTER_ADDRESS,
+            await plugin.velociGauge(),
+            pluginFactory.address,
             await plugin.getTokensInUnderlying(),
             await plugin.getBribeTokens(),
+            GAUGE_REWARDS,
             await plugin.getProtocol(),
             await plugin.getUnderlyingSymbol(),
         ],  
@@ -129,6 +136,12 @@ async function main() {
     //===================================================================
 
     // await verifyPlugin();
+
+    //===================================================================
+    // 4. Transfer Factory Ownership to multisig
+    //===================================================================
+
+    // await pluginFactory.transferOwnership(MULTISIG);
   
   }
   
