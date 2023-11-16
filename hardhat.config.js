@@ -38,9 +38,9 @@ module.exports = {
       optimizer: {
         enabled: true,
         runs: 200,
-        details: {
-          yul: true
-        }
+        // details: {
+        //   yul: true
+        // }
       },
     },
   },
@@ -59,11 +59,11 @@ module.exports = {
       // }
       // ***********************************
       // ******* base plugin testing *******
-      // chainId: 8453,
-      // forking: {
-      //   url: "https://mainnet.base.org",
-      //   blockNumber: 4444400,
-      // }
+      chainId: 8453,
+      forking: {
+        url: "https://mainnet.base.org",
+        blockNumber: 6686660,
+      },
       // ***********************************
     },
   },
@@ -72,7 +72,7 @@ module.exports = {
   },
   paths: {
     sources: "./contracts",
-    tests: "./tests",
+    tests: "./tests/base",
     cache: "./cache",
     artifacts: "./artifacts",
   },

@@ -357,9 +357,10 @@ contract Multicall {
     function portfolioData(address account) external view returns (Portfolio memory portfolio) {
         uint256 priceBASE = getBasePrice();
 
-        portfolio.total = (account == address(0) ? 0 : priceBASE * ((IERC20(BASE).balanceOf(account)) 
-            + ((IERC20(TOKEN).balanceOf(account) + IVTOKEN(VTOKEN).balanceOfTOKEN(account)) * ITOKEN(TOKEN).getMarketPrice() / 1e18) 
-            + (IERC20(OTOKEN).balanceOf(account) * ITOKEN(TOKEN).getOTokenPrice() / 1e18)) / 1e18);
+        portfolio.total = (account == address(0) ? 0 : priceBASE * (((IERC20(TOKEN).balanceOf(account) 
+            + IVTOKEN(VTOKEN).balanceOfTOKEN(account)) * ITOKEN(TOKEN).getMarketPrice() / 1e18)
+            + (IERC20(OTOKEN).balanceOf(account) * ITOKEN(TOKEN).getOTokenPrice() / 1e18)
+            - ITOKEN(TOKEN).debts(account)) / 1e18);
 
         portfolio.stakingRewards = (account == address(0) ? 0 : priceBASE * (IVTOKENRewarder(rewarder).getRewardForDuration(BASE)
             + (IVTOKENRewarder(rewarder).getRewardForDuration(TOKEN) * ITOKEN(TOKEN).getMarketPrice() / 1e18)
