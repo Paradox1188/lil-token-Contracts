@@ -62,7 +62,7 @@ module.exports = {
       chainId: 8453,
       forking: {
         url: "https://mainnet.base.org",
-        blockNumber: 6686660,
+        blockNumber: 7253780,
       },
       // ***********************************
     },

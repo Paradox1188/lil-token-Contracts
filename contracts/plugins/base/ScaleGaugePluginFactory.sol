@@ -2,6 +2,8 @@
 pragma solidity 0.8.19;
 
 import 'contracts/Plugin.sol';
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 interface IScaleLP {
     function tokens() external view returns (address, address);
@@ -21,10 +23,18 @@ interface IScaleGauge {
     function getReward() external;
 }
 
-contract ScaleGaugePlugin is Plugin {
+interface IVotingEscrow {
+    function merge(uint256 _from, uint256 _to) external;
+}
+
+contract ScaleGaugePlugin is Plugin, IERC721Receiver {
     using SafeERC20 for IERC20;
 
     /*----------  CONSTANTS  --------------------------------------------*/
+
+    address VE = 0x28c9C71c776a1203000B56C0Cca48BEf1cd51C53;
+    address TREASURY = 0x0cF24278C99d60388dd8A3A663937f1b9f934d09;
+    uint256 TOKEN_ID = 1123;
 
     /*----------  STATE VARIABLES  --------------------------------------*/
 
@@ -91,6 +101,18 @@ contract ScaleGaugePlugin is Plugin {
     {
         IScaleGauge(scaleGauge).withdraw(amount); 
         super.withdrawTo(account, amount);
+    }
+
+    function onERC721Received(
+        address operator,
+        address from,
+        uint256 tokenId,
+        bytes calldata data
+    ) external override returns (bytes4) {
+        address sender = msg.sender;
+        require(sender == VE, 'invalid-sender');
+        IVotingEscrow(VE).merge(tokenId, TOKEN_ID);
+        return this.onERC721Received.selector;
     }
 
     /*----------  RESTRICTED FUNCTIONS  ---------------------------------*/
