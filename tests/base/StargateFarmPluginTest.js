@@ -65,7 +65,7 @@ let STG, masterchef;
 let LP0, plugin0, gauge0, bribe0;
 let LP1, plugin1, gauge1, bribe1;
 
-describe.only("base: Stargate farm Testing", function () {
+describe("base: Stargate farm Testing", function () {
   before("Initial set up", async function () {
     console.log("Begin Initialization");
 
