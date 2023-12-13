@@ -29,7 +29,7 @@ interface ITOKEN {
     function borrow(uint256 amountBase) external;
 }
 
-interface IRouter {
+interface IMulticall {
     function quoteBuyIn(uint256 input, uint256 slippageTolerance) external view returns (uint256 output, uint256 slippage, uint256 minOutput, uint256 autoMinOutput);
 }
 
@@ -73,6 +73,8 @@ contract LSTOKEN is ERC20, ERC20Permit, ERC20Votes, ReentrancyGuard, Ownable {
     /*===================================================================*/
     /*===========================  SETTINGS  ============================*/
 
+
+    uint256 public constant RATIO = 10000;                  // 10000 lsTOKEN = 1 TOKEN
     string internal constant NAME = 'LiquidStakedTOKEN';    // Name of LSTOKEN
     string internal constant SYMBOL = 'lsTOKEN';            // Symbol of LSTOKEN
 
@@ -81,11 +83,13 @@ contract LSTOKEN is ERC20, ERC20Permit, ERC20Votes, ReentrancyGuard, Ownable {
 
     /*----------  CONSTANTS  --------------------------------------------*/
 
-    uint256 public constant FEE = 2000;
     uint256 public constant DIVISOR = 10000;
     uint256 public constant SLIPPAGE_TOLERANCE = 9500; // 5% slippage tolerance
 
     /*----------  STATE VARIABLES  --------------------------------------*/
+
+    uint256 public feeToHolders = 1000;    // fee to holders   (0 < feeToHolders < 2500)
+    uint256 public feeToLiquidity = 1000;  // fee to liquidity (0 < feeToLiquidity < 2500)
 
     address public immutable base;
     address public immutable token;
@@ -97,7 +101,7 @@ contract LSTOKEN is ERC20, ERC20Permit, ERC20Votes, ReentrancyGuard, Ownable {
     address public liquidity;
 
     address public voter;           // voter contract to vote on plugins
-    address public router;          // router contract to get buy quotes   
+    address public mutlicall;       // multicall contract to get buy quotes   
     address public voteDelegate;    // address to delegate voting power to
     address public rewardReceiver;  // address to receive voting rewards
 
@@ -161,7 +165,7 @@ contract LSTOKEN is ERC20, ERC20Permit, ERC20Votes, ReentrancyGuard, Ownable {
         address _vToken,
         address _vTokenRewarder,
         address _voter,
-        address _router
+        address _mutlicall
     )
         ERC20(NAME, SYMBOL)
         ERC20Permit(NAME)
@@ -172,7 +176,7 @@ contract LSTOKEN is ERC20, ERC20Permit, ERC20Votes, ReentrancyGuard, Ownable {
         vToken = _vToken;
         vTokenRewarder = _vTokenRewarder;
         voter = _voter;
-        router = _router;
+        mutlicall = _mutlicall;
         voteDelegate = msg.sender;
         rewardReceiver = msg.sender;
         fees = address(new LSTOKENFees(_base));
@@ -190,8 +194,8 @@ contract LSTOKEN is ERC20, ERC20Permit, ERC20Votes, ReentrancyGuard, Ownable {
     {
         address account = msg.sender;
         _updateFor(account);
-        _mint(account, amount);
-        emit LSTOKEN__Minted(account, amount);
+        _mint(account, amount * RATIO);
+        emit LSTOKEN__Minted(account, amount * RATIO);
 
         IERC20(token).safeTransferFrom(account, address(this), amount);
     }
@@ -284,12 +288,15 @@ contract LSTOKEN is ERC20, ERC20Permit, ERC20Votes, ReentrancyGuard, Ownable {
         external
         nonZeroInput(amount)
     {
-        uint256 fee = amount * FEE / DIVISOR;
-        _updateBase(fee);
-        amount = amount - fee;
+        uint256 holderFee = amount * feeToHolders / DIVISOR;
+        if (holderFee > 0) _updateBase(holderFee);
+        uint256 liquidityFee = amount * feeToLiquidity / DIVISOR;
+        if (liquidityFee > 0) IERC20(base).transfer(liquidity, liquidityFee);
+        amount = amount - holderFee - liquidityFee;
+
         IERC20(base).safeApprove(token, 0);
         IERC20(base).safeApprove(token, amount);
-        (,,uint256 minOutput,) = IRouter(router).quoteBuyIn(amount, SLIPPAGE_TOLERANCE);
+        (,,uint256 minOutput,) = IMulticall(mutlicall).quoteBuyIn(amount, SLIPPAGE_TOLERANCE);
         ITOKEN(token).buy(amount, minOutput, block.timestamp + 1800, address(this), address(this));
     }
 
@@ -298,12 +305,15 @@ contract LSTOKEN is ERC20, ERC20Permit, ERC20Votes, ReentrancyGuard, Ownable {
     {
         uint256 balance = IERC20(base).balanceOf(address(this));
         if (balance > 0) {
-            uint256 fee = balance * FEE / DIVISOR;
-            _updateBase(fee);
-            balance = balance - fee;
+            uint256 holderFee = balance * feeToHolders / DIVISOR;
+            if (holderFee > 0) _updateBase(holderFee);
+            uint256 liquidityFee = balance * feeToLiquidity / DIVISOR;
+            if (liquidityFee > 0) IERC20(base).transfer(liquidity, liquidityFee);
+            balance = balance - holderFee - liquidityFee;
+
             IERC20(base).safeApprove(token, 0);
             IERC20(base).safeApprove(token, balance);
-            (,,, uint256 autoMinOutput) = IRouter(router).quoteBuyIn(balance, SLIPPAGE_TOLERANCE);
+            (,,, uint256 autoMinOutput) = IMulticall(mutlicall).quoteBuyIn(balance, SLIPPAGE_TOLERANCE);
             ITOKEN(token).buy(balance, autoMinOutput, block.timestamp + 1800, address(this), address(this));
         }
     }
