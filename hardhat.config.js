@@ -7,7 +7,7 @@ require("solidity-coverage");
 /*===================================================================*/
 /*===========================  SETTINGS  ============================*/
 
-const CHAIN_ID = 84531; // Mumbai chain id
+const CHAIN_ID = 2061; // Berachain chain id
 
 /*===========================  END SETTINGS  ========================*/
 /*===================================================================*/
@@ -59,10 +59,15 @@ module.exports = {
       // }
       // ***********************************
       // ******* base plugin testing *******
-      chainId: 8453,
+      // chainId: 8453,
+      // forking: {
+      //   url: "https://mainnet.base.org",
+      //   blockNumber: 7253780,
+      // },
+      // ******* bera plugin testing *******
+      chainId: 2061,
       forking: {
-        url: "https://mainnet.base.org",
-        blockNumber: 7253780,
+        url: "https://rpc.berachain-internal.com/",
       },
       // ***********************************
     },
