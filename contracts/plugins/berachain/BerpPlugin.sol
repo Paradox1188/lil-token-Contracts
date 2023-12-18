@@ -20,31 +20,27 @@ contract BexPairPlugin is Plugin {
 
     /*----------  CONSTANTS  --------------------------------------------*/
 
-    address public constant BHONEY = 0xb89a17406508dc5edc3e777cbc23cd6b07fa6283;
     address public constant BGT = 0x09E585D2bdEb5ecf90ADE67dCE1125070D2714a3;
     address public constant BANK = 0x4381dC2aB14285160c808659aEe005D51255adD7;
     address public constant REWARDER = 0x55684e2cA2bace0aDc512C1AFF880b15b8eA7214;
-
-    address public constant WBERA = 0x5806E416dA447b267cEA759358cF22Cc41FAE80F;
-    address public constant HONEY = 0x7EeCA4205fF31f947EdBd49195a7A88E6A91161B;
 
     string public constant PROTOCOL = 'BERP';
     string public constant SYMBOL = 'bHONEY';
 
     /*----------  STATE VARIABLES  --------------------------------------*/
 
-    address[] public _tokensInUnderlying = [BHONEY];
-    address[] public _bribeTokens = [BGT];
-
     /*----------  ERRORS ------------------------------------------------*/
 
     /*----------  FUNCTIONS  --------------------------------------------*/
 
     constructor(
-        address _voter
+        address _voter,
+        address _bHoney,
+        address[] memory _tokensInUnderlying,
+        address[] memory _bribeTokens
     )
         Plugin(
-            BHONEY, 
+            _bHoney, 
             _voter, 
             _tokensInUnderlying, 
             _bribeTokens,
