@@ -9,13 +9,10 @@ const helpers = require("@nomicfoundation/hardhat-network-helpers");
 
 const AddressZero = "0x0000000000000000000000000000000000000000";
 const one = convert("1", 18);
-const one6 = convert("1", 6);
 const two = convert("2", 18);
 const five = convert("5", 18);
 const ten = convert("10", 18);
-const ten6 = convert("10", 6);
 const twenty = convert("20", 18);
-const thirty = convert("30", 18);
 const fifty = convert("50", 18);
 const ninety = convert("90", 18);
 const oneHundred = convert("100", 18);
@@ -23,9 +20,6 @@ const twoHundred = convert("200", 18);
 const fiveHundred = convert("500", 18);
 const eightHundred = convert("800", 18);
 const oneThousand = convert("1000", 18);
-const oneThousand6 = convert("1000", 6);
-const fourThousand = convert("4000", 18);
-const fourThousand6 = convert("4000", 6);
 const fiveThousand = convert("5000", 18);
 const fiveThousand6 = convert("5000", 6);
 const tenThousand6 = convert("10000", 6);
@@ -41,56 +35,22 @@ const provider = new ethers.providers.getDefaultProvider(
 
 const BASE_API_KEY = process.env.BASE_API_KEY || "";
 
-const SCALE_ADDR = "0x54016a4848a38f257B6E96331F7404073Fd9c32C";
-const SCALE_PROXY = "0x7bE024bbD16E3E0ab6839cb94D0dc25B7A101eAb";
-const SCALE_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=${SCALE_PROXY}&apikey=${BASE_API_KEY}`;
-const SCALE_HOLDER = "0xadf9152100c536e854e0ed7a3e0e60275cef7e7d";
+const STG_ADDR = "0xE3B53AF74a4BF62Ae5511055290838050bf764Df";
+const STG_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=${STG_ADDR}&apikey=${BASE_API_KEY}`;
 
-const WETH_ADDR = "0x4200000000000000000000000000000000000006";
-const WETH_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=${WETH_ADDR}&apikey=${BASE_API_KEY}`;
-const WETH_HOLDER = "0xee5eb45230f39b99899c234ae3e1bd636fda3be4";
-
-const USDbC_ADDR = "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA";
-const USDbC_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=0x1833C6171E0A3389B156eAedB301CFfbf328B463&apikey=${BASE_API_KEY}`;
-const USDbC_HOLDER = "0xc68a33de9ceac7bdaed242ae1dc40d673ed4f643";
-
-const MAI_ADDR = "0xbf1aeA8670D2528E08334083616dD9C5F3B087aE";
-const MAI_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=${MAI_ADDR}&apikey=${BASE_API_KEY}`;
-const MAI_HOLDER = "0x9ce6e6b60c894d1df9bc3d9d6cc969b79fb176b7";
-
-const TAROT_ADDR = "0xf544251d25f3d243a36b07e7e7962a678f952691";
-const TAROT_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=${TAROT_ADDR}&apikey=${BASE_API_KEY}`;
-const TAROT_HOLDER = "0x0ed650c3185ef33b6f61ad2fa7521a3602df566c";
-
-// vLP-SCALE/WETH
-const LP0_ADDR = "0xc825c67cA3a80D487C339A6C16bB84f7DCA16012";
+// SG-ETH-LP
+const LP0_ADDR = "0x28fc411f9e1c480AD312b3d9C60c22b965015c6B";
 const LP0_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=${LP0_ADDR}&apikey=${BASE_API_KEY}`;
-const LP0_GAUGE = "0x190fC4FDB5d6Aa5C625ff0E45899CDA15Ce3c95F";
-const LP0_GAUGE_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=${LP0_GAUGE}&apikey=${BASE_API_KEY}`;
+const LP0_HOLDER = "0x64682257ead6bbd155b448e45a6bd85b459eb192";
 
-// sLP-MAI/USDbC
-const LP1_ADDR = "0x8084B1b2DDe3B685A0FAB3bBF201f94340d1D768";
-const LP1_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=${LP0_ADDR}&apikey=${BASE_API_KEY}`;
-const LP1_GAUGE = "0x6496BC99dcB8319BeF9939b45Be9cb8f345aC9B1";
-const LP1_GAUGE_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=${LP1_GAUGE}&apikey=${BASE_API_KEY}`;
+// SG-USDbC-LP
+const LP1_ADDR = "0x4c80E24119CFB836cdF0a6b53dc23F04F7e652CA";
+const LP1_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=${LP1_ADDR}&apikey=${BASE_API_KEY}`;
+const LP1_HOLDER = "0xdf3885f792cd7ee4a03495cc74225b8cbe1205c3";
 
-// vLP-TAROT/USDC
-const LP2_ADDR = "0xc54D3698Ff73a58D229860c8C2E137867841c631";
-const LP2_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=${LP2_ADDR}&apikey=${BASE_API_KEY}`;
-const LP2_GAUGE = "0x7cE4F825E56a28D47891c721ef9641947c4Ae6B8";
-const LP2_GAUGE_HOLDER = "0xb1028c2d61337589e515d6bdb949ed97935518b2";
-const LP2_GAUGE_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=${LP2_GAUGE}&apikey=${BASE_API_KEY}`;
-
-// veSCALE
-const VE_ADDR = "0x28c9C71c776a1203000B56C0Cca48BEf1cd51C53";
-const VE_PROXY = "0x3Ce7ba8aD19FE33Ae2cE20A4Cc1b0D91C5053549";
-const VE_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=${VE_PROXY}&apikey=${BASE_API_KEY}`;
-const MULTISIG = "0x0cF24278C99d60388dd8A3A663937f1b9f934d09";
-const ID = "1123";
-
-// ROUTER
-const ROUTER = "0x2F87Bf58D5A9b2eFadE55Cdbd46153a0902be6FA";
-const ROUTER_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=${ROUTER}&apikey=${BASE_API_KEY}`;
+// MasterChef
+const MASTER_CHEF = "0x06Eb48763f117c7Be887296CDcdfad2E4092739C";
+const MASTER_CHEF_URL = `https://api.basescan.org/api?module=contract&action=getabi&address=${MASTER_CHEF}&apikey=${BASE_API_KEY}`;
 
 let owner, multisig, treasury, user0, user1, user2;
 let VTOKENFactory,
@@ -101,56 +61,20 @@ let VTOKENFactory,
   bribeFactory;
 let minter, voter, fees, rewarder, governance, multicall, pluginFactory;
 let TOKEN, VTOKEN, OTOKEN, BASE;
-let SCALE, WETH, USDbC, MAI, TAROT, router, ve;
-let LP0, LP0Gauge, plugin0, gauge0, bribe0;
-let LP1, LP1Gauge, plugin1, gauge1, bribe1;
-let LP2, LP2Gauge, plugin2, gauge2, bribe2;
+let STG, masterchef;
+let LP0, plugin0, gauge0, bribe0;
+let LP1, plugin1, gauge1, bribe1;
 
-describe("base: Equalizer gauge Testing", function () {
+describe.only("base: Stargate farm Testing", function () {
   before("Initial set up", async function () {
     console.log("Begin Initialization");
 
-    // Router
-    response = await axios.get(ROUTER_URL);
-    const ROUTER_ABI = JSON.parse(response.data.result);
-    router = new ethers.Contract(ROUTER, ROUTER_ABI, provider);
+    // STG
+    response = await axios.get(STG_URL);
+    const STG_ABI = JSON.parse(response.data.result);
+    AERO = new ethers.Contract(STG_ADDR, STG_ABI, provider);
     await timer(1000);
-    console.log("- router Initialized");
-
-    // SCALE
-    response = await axios.get(SCALE_URL);
-    const SCALE_ABI = JSON.parse(response.data.result);
-    SCALE = new ethers.Contract(SCALE_ADDR, SCALE_ABI, provider);
-    await timer(1000);
-    console.log("- SCALE Initialized");
-
-    // WETH
-    response = await axios.get(WETH_URL);
-    const WETH_ABI = JSON.parse(response.data.result);
-    WETH = new ethers.Contract(WETH_ADDR, WETH_ABI, provider);
-    await timer(1000);
-    console.log("- WETH Initialized");
-
-    // USDbC
-    response = await axios.get(USDbC_URL);
-    const USDbC_ABI = JSON.parse(response.data.result);
-    USDbC = new ethers.Contract(USDbC_ADDR, USDbC_ABI, provider);
-    await timer(1000);
-    console.log("- USDbC Initialized");
-
-    // MAI
-    response = await axios.get(MAI_URL);
-    const MAI_ABI = JSON.parse(response.data.result);
-    MAI = new ethers.Contract(MAI_ADDR, MAI_ABI, provider);
-    await timer(1000);
-    console.log("- MAI Initialized");
-
-    // TAROT
-    response = await axios.get(TAROT_URL);
-    const TAROT_ABI = JSON.parse(response.data.result);
-    TAROT = new ethers.Contract(TAROT_ADDR, TAROT_ABI, provider);
-    await timer(1000);
-    console.log("- TAROT Initialized");
+    console.log("- STG Initialized");
 
     // LP0
     response = await axios.get(LP0_URL);
@@ -166,40 +90,12 @@ describe("base: Equalizer gauge Testing", function () {
     await timer(1000);
     console.log("- LP1 Initialized");
 
-    // LP2
-    response = await axios.get(LP2_URL);
-    const LP2_ABI = JSON.parse(response.data.result);
-    LP2 = new ethers.Contract(LP2_ADDR, LP2_ABI, provider);
+    // MasterChef
+    response = await axios.get(MASTER_CHEF_URL);
+    const MASTER_CHEF_ABI = JSON.parse(response.data.result);
+    masterchef = new ethers.Contract(MASTER_CHEF, MASTER_CHEF_ABI, provider);
     await timer(1000);
-    console.log("- LP2 Initialized");
-
-    // LP0Gauge
-    response = await axios.get(LP0_GAUGE_URL);
-    const LP0_GAUGE_ABI = JSON.parse(response.data.result);
-    LP0Gauge = new ethers.Contract(LP0_GAUGE, LP0_GAUGE_ABI, provider);
-    await timer(1000);
-    console.log("- LP0Gauge Initialized");
-
-    // LP1Gauge
-    response = await axios.get(LP1_GAUGE_URL);
-    const LP1_GAUGE_ABI = JSON.parse(response.data.result);
-    LP1Gauge = new ethers.Contract(LP1_GAUGE, LP1_GAUGE_ABI, provider);
-    await timer(1000);
-    console.log("- LP1Gauge Initialized");
-
-    // LP2Gauge
-    response = await axios.get(LP2_GAUGE_URL);
-    const LP2_GAUGE_ABI = JSON.parse(response.data.result);
-    LP2Gauge = new ethers.Contract(LP2_GAUGE, LP2_GAUGE_ABI, provider);
-    await timer(1000);
-    console.log("- LP2Gauge Initialized");
-
-    // VE
-    response = await axios.get(VE_URL);
-    const VE_ABI = JSON.parse(response.data.result);
-    ve = new ethers.Contract(VE_ADDR, VE_ABI, provider);
-    await timer(1000);
-    console.log("- VE Initialized");
+    console.log("- MasterChef Initialized");
 
     // initialize users
     [owner, multisig, treasury, user0, user1, user2] =
@@ -364,35 +260,28 @@ describe("base: Equalizer gauge Testing", function () {
 
     // initialize Plugin Factory
     const pluginFactoryArtifact = await ethers.getContractFactory(
-      "ScaleGaugePluginFactory"
+      "StargateFarmPluginFactory"
     );
     const pluginFactoryContract = await pluginFactoryArtifact.deploy(
       voter.address
     );
     pluginFactory = await ethers.getContractAt(
-      "ScaleGaugePluginFactory",
+      "StargateFarmPluginFactory",
       pluginFactoryContract.address
     );
     console.log("- Plugin Factory Initialized");
 
     // initialize LP0
-    await pluginFactory.createPlugin(LP0.address, "vLP-SCALE/WETH");
+    await pluginFactory.createPlugin(0, "SG-ETH-LP");
     plugin0 = await ethers.getContractAt(
-      "contracts/plugins/base/ScaleGaugePluginFactory.sol:ScaleGaugePlugin",
+      "contracts/plugins/base/StargateFarmPluginFactory.sol:StargateFarmPlugin",
       await pluginFactory.last_plugin()
     );
 
     // initialize LP1
-    await pluginFactory.createPlugin(LP1.address, "sLP-MAI/USDbC");
+    await pluginFactory.createPlugin(1, "SG-USDbC-LP");
     plugin1 = await ethers.getContractAt(
-      "contracts/plugins/base/ScaleGaugePluginFactory.sol:ScaleGaugePlugin",
-      await pluginFactory.last_plugin()
-    );
-
-    // initialize LP2
-    await pluginFactory.createPlugin(LP2.address, "vLP-TAROT/USDC");
-    plugin2 = await ethers.getContractAt(
-      "contracts/plugins/base/ScaleGaugePluginFactory.sol:ScaleGaugePlugin",
+      "contracts/plugins/base/StargateFarmPluginFactory.sol:StargateFarmPlugin",
       await pluginFactory.last_plugin()
     );
 
@@ -424,241 +313,53 @@ describe("base: Equalizer gauge Testing", function () {
     );
     console.log("- LP1 Added in Voter");
 
-    // add LP2 Plugin to Voter
-    await voter.addPlugin(plugin2.address);
-    let Gauge2Address = await voter.gauges(plugin2.address);
-    let Bribe2Address = await voter.bribes(plugin2.address);
-    gauge2 = await ethers.getContractAt(
-      "contracts/GaugeFactory.sol:Gauge",
-      Gauge2Address
-    );
-    bribe2 = await ethers.getContractAt(
-      "contracts/BribeFactory.sol:Bribe",
-      Bribe2Address
-    );
-    console.log("- LP2 Added in Voter");
-
     console.log("Initialization Complete");
     console.log();
   });
 
-  it("Impersonate MUTLSIG holder and approve plugin on NFT", async function () {
-    console.log("******************************************************");
-    await owner.sendTransaction({
-      to: MULTISIG,
-      value: ethers.utils.parseEther("1.0"), // Sends exactly 1.0 ether
-    });
-    await network.provider.request({
-      method: "hardhat_impersonateAccount",
-      params: [MULTISIG],
-    });
-    const signer = ethers.provider.getSigner(MULTISIG);
-
-    await ve.connect(signer).approve(plugin2.address, ID);
-  });
-
-  it("Impersonate SCALE holder and send to user0", async function () {
+  it("Impersonate LP0 holder and send to user0", async function () {
     console.log("******************************************************");
     await network.provider.request({
       method: "hardhat_impersonateAccount",
-      params: [SCALE_HOLDER],
+      params: [LP0_HOLDER],
     });
-    const signer = ethers.provider.getSigner(SCALE_HOLDER);
+    const signer = ethers.provider.getSigner(LP0_HOLDER);
 
-    await SCALE.connect(signer).transfer(
+    await LP0.connect(signer).transfer(
       user0.address,
-      await SCALE.connect(owner).balanceOf(SCALE_HOLDER)
+      await LP0.connect(owner).balanceOf(LP0_HOLDER)
     );
 
     console.log(
-      "Holder SCALE balance: ",
-      divDec(await SCALE.connect(owner).balanceOf(SCALE_HOLDER))
+      "Holder LP0 balance: ",
+      divDec(await LP0.connect(owner).balanceOf(LP0_HOLDER))
     );
-    console.log(
-      "User0 SCALE balance: ",
-      divDec(await SCALE.connect(owner).balanceOf(user0.address))
-    );
-  });
-
-  it("Impersonate WETH holder and send to user0", async function () {
-    console.log("******************************************************");
-    await network.provider.request({
-      method: "hardhat_impersonateAccount",
-      params: [WETH_HOLDER],
-    });
-    const signer = ethers.provider.getSigner(WETH_HOLDER);
-
-    await WETH.connect(signer).transfer(
-      user0.address,
-      await WETH.connect(owner).balanceOf(WETH_HOLDER)
-    );
-
-    console.log(
-      "Holder WETH balance: ",
-      divDec(await WETH.connect(owner).balanceOf(WETH_HOLDER))
-    );
-    console.log(
-      "User0 WETH balance: ",
-      divDec(await WETH.connect(owner).balanceOf(user0.address))
-    );
-  });
-
-  it("Impersonate USDbC holder and send to user0", async function () {
-    console.log("******************************************************");
-    await network.provider.request({
-      method: "hardhat_impersonateAccount",
-      params: [USDbC_HOLDER],
-    });
-    const signer = ethers.provider.getSigner(USDbC_HOLDER);
-
-    await USDbC.connect(signer).transfer(
-      user0.address,
-      await USDbC.connect(owner).balanceOf(USDbC_HOLDER)
-    );
-
-    console.log(
-      "Holder USDbC balance: ",
-      divDec(await USDbC.connect(owner).balanceOf(USDbC_HOLDER))
-    );
-    console.log(
-      "User0 USDbC balance: ",
-      divDec(await USDbC.connect(owner).balanceOf(user0.address))
-    );
-  });
-
-  it("Impersonate MAI holder and send to user0", async function () {
-    console.log("******************************************************");
-    await network.provider.request({
-      method: "hardhat_impersonateAccount",
-      params: [MAI_HOLDER],
-    });
-    const signer = ethers.provider.getSigner(MAI_HOLDER);
-
-    await MAI.connect(signer).transfer(
-      user0.address,
-      await MAI.connect(owner).balanceOf(MAI_HOLDER)
-    );
-
-    console.log(
-      "Holder MAI balance: ",
-      divDec(await MAI.connect(owner).balanceOf(MAI_HOLDER))
-    );
-    console.log(
-      "User0 MAI balance: ",
-      divDec(await MAI.connect(owner).balanceOf(user0.address))
-    );
-  });
-
-  it("Impersonate TAROT holder and send to user0", async function () {
-    console.log("******************************************************");
-    await network.provider.request({
-      method: "hardhat_impersonateAccount",
-      params: [TAROT_HOLDER],
-    });
-    const signer = ethers.provider.getSigner(TAROT_HOLDER);
-
-    await TAROT.connect(signer).transfer(
-      user0.address,
-      await TAROT.connect(owner).balanceOf(TAROT_HOLDER)
-    );
-
-    console.log(
-      "Holder TAROT balance: ",
-      divDec(await TAROT.connect(owner).balanceOf(MAI_HOLDER))
-    );
-    console.log(
-      "User0 TAROT balance: ",
-      divDec(await TAROT.connect(owner).balanceOf(user0.address))
-    );
-  });
-
-  it("user0 gets LP0 liquidity", async function () {
-    console.log("******************************************************");
-    await SCALE.connect(user0).approve(
-      router.address,
-      await SCALE.connect(owner).balanceOf(user0.address)
-    );
-    await router
-      .connect(user0)
-      .addLiquidityETH(
-        SCALE.address,
-        false,
-        await SCALE.connect(owner).balanceOf(user0.address),
-        1,
-        1,
-        user0.address,
-        1888060806,
-        { value: ten }
-      );
-    await LP0Gauge.connect(user0).withdrawAll();
     console.log(
       "User0 LP0 balance: ",
       divDec(await LP0.connect(owner).balanceOf(user0.address))
     );
   });
 
-  it("user0 swap USDC to MAI", async function () {
+  it("Impersonate LP1 holder and send to user0", async function () {
     console.log("******************************************************");
-    await USDbC.connect(user0).approve(router.address, fiveThousand6);
-    await router
-      .connect(user0)
-      .swapExactTokensForTokens(
-        fiveThousand6,
-        1,
-        [[USDbC.address, MAI.address, true]],
-        user0.address,
-        1792282187
-      );
-  });
+    await network.provider.request({
+      method: "hardhat_impersonateAccount",
+      params: [LP1_HOLDER],
+    });
+    const signer = ethers.provider.getSigner(LP1_HOLDER);
 
-  it("user0 gets LP1 liquidity", async function () {
-    console.log("******************************************************");
-    await MAI.connect(user0).approve(router.address, fiveThousand);
-    await USDbC.connect(user0).approve(router.address, fiveThousand6);
-    await router
-      .connect(user0)
-      .addLiquidity(
-        USDbC.address,
-        MAI.address,
-        true,
-        fiveThousand6,
-        fiveThousand,
-        1,
-        1,
-        user0.address,
-        1888060806
-      );
-    await LP1Gauge.connect(user0).withdrawAll();
-    console.log(
-      "User0 USDbC balance: ",
-      divDec6(await USDbC.connect(owner).balanceOf(user0.address))
+    await LP1.connect(signer).transfer(
+      user0.address,
+      await LP1.connect(owner).balanceOf(LP1_HOLDER)
     );
+
     console.log(
-      "User0 MAI balance: ",
-      divDec(await MAI.connect(owner).balanceOf(user0.address))
+      "Holder LP1 balance: ",
+      divDec(await LP1.connect(owner).balanceOf(LP1_HOLDER))
     );
     console.log(
       "User0 LP1 balance: ",
       divDec(await LP1.connect(owner).balanceOf(user0.address))
-    );
-  });
-
-  it("user0 gets LP2 liquidity", async function () {
-    console.log("******************************************************");
-    await network.provider.request({
-      method: "hardhat_impersonateAccount",
-      params: [LP2_GAUGE_HOLDER],
-    });
-    const signer = ethers.provider.getSigner(LP2_GAUGE_HOLDER);
-    await LP2Gauge.connect(signer).withdrawAll();
-
-    await LP2.connect(signer).transfer(
-      user0.address,
-      await LP2.connect(owner).balanceOf(LP2_GAUGE_HOLDER)
-    );
-    console.log(
-      "User0 LP2 balance: ",
-      divDec(await LP2.connect(owner).balanceOf(user0.address))
     );
   });
 
@@ -684,17 +385,6 @@ describe("base: Equalizer gauge Testing", function () {
       .depositFor(
         user0.address,
         await LP1.connect(owner).balanceOf(user0.address)
-      );
-
-    await LP2.connect(user0).approve(
-      plugin2.address,
-      await LP2.connect(owner).balanceOf(user0.address)
-    );
-    await plugin2
-      .connect(user0)
-      .depositFor(
-        user0.address,
-        await LP2.connect(owner).balanceOf(user0.address)
       );
   });
 
@@ -742,10 +432,7 @@ describe("base: Equalizer gauge Testing", function () {
     console.log("******************************************************");
     await voter
       .connect(user1)
-      .vote(
-        [plugin0.address, plugin1.address, plugin2.address],
-        [ten, ten, ten]
-      );
+      .vote([plugin0.address, plugin1.address], [ten, ten]);
   });
 
   it("BondingCurveData, user1", async function () {
@@ -959,113 +646,17 @@ describe("base: Equalizer gauge Testing", function () {
     console.log("Earned OTOKEN: ", divDec(res.accountEarnedOTOKEN));
   });
 
-  it("LPGauge data ", async function () {
-    console.log("******************************************************");
-    console.log("LP0Gauge");
-    console.log(
-      "Claimable SCALE: ",
-      await LP0Gauge.connect(owner).earned(SCALE.address, plugin0.address)
-    );
-    console.log();
-
-    console.log("LP1Gauge");
-    console.log(
-      "Claimable SCALE: ",
-      await LP1Gauge.connect(owner).earned(SCALE.address, plugin1.address)
-    );
-    console.log();
-
-    console.log("LP2Gauge");
-    console.log(
-      "Claimable SCALE: ",
-      await LP2Gauge.connect(owner).earned(SCALE.address, plugin2.address)
-    );
-    console.log();
-  });
-
   it("Forward time by 1 days", async function () {
     console.log("******************************************************");
     await network.provider.send("evm_increaseTime", [24 * 3600]);
     await network.provider.send("evm_mine");
   });
 
-  it("LPGauge data ", async function () {
-    console.log("******************************************************");
-    console.log("LP0Gauge");
-    console.log(
-      "Claimable SCALE: ",
-      await LP0Gauge.connect(owner).earned(SCALE.address, plugin0.address)
-    );
-    console.log();
-
-    console.log("LP1Gauge");
-    console.log(
-      "Claimable SCALE: ",
-      await LP1Gauge.connect(owner).earned(SCALE.address, plugin1.address)
-    );
-    console.log();
-
-    console.log("LP2Gauge");
-    console.log(
-      "Claimable SCALE: ",
-      await LP2Gauge.connect(owner).earned(SCALE.address, plugin2.address)
-    );
-    console.log();
-  });
-
-  it("NFT Balances", async function () {
-    console.log("******************************************************");
-    console.log("Multisig NFTs", await ve.connect(user0).balanceOf(MULTISIG));
-    console.log(
-      "Multisig Amount",
-      divDec(await ve.connect(user0).balanceOfNFT(ID))
-    );
-    console.log();
-    console.log(
-      "Plugin0 NFTs",
-      await ve.connect(user0).balanceOf(plugin0.address)
-    );
-    console.log(
-      "Plugin1 NFTs",
-      await ve.connect(user0).balanceOf(plugin1.address)
-    );
-    console.log(
-      "Plugin2 NFTs",
-      await ve.connect(user0).balanceOf(plugin2.address)
-    );
-  });
-
   it("Owner calls distribute", async function () {
     console.log("******************************************************");
     await voter.connect(owner).distro();
     await fees.distribute();
-    await voter.distributeToBribes([
-      plugin0.address,
-      plugin1.address,
-      plugin2.address,
-    ]);
-  });
-
-  it("NFT Balances", async function () {
-    console.log("******************************************************");
-    console.log("Multisig NFTs", await ve.connect(user0).balanceOf(MULTISIG));
-    console.log(
-      "Multisig Amount",
-      divDec(await ve.connect(user0).balanceOfNFT(ID))
-    );
-    console.log();
-    console.log(
-      "Plugin0 NFTs",
-      await ve.connect(user0).balanceOf(plugin0.address)
-    );
-    console.log(
-      "Plugin1 NFTs",
-      await ve.connect(user0).balanceOf(plugin1.address)
-    );
-    console.log(
-      "Plugin2 NFTs",
-      await ve.connect(user0).balanceOf(plugin2.address)
-    );
+    await voter.distributeToBribes([plugin0.address, plugin1.address]);
   });
 
   it("BribeCardData, plugin0, user1 ", async function () {
@@ -1266,23 +857,5 @@ describe("base: Equalizer gauge Testing", function () {
     console.log("Balance Underlying: ", divDec(res.accountUnderlyingBalance));
     console.log("Balance Deposited: ", divDec(res.accountStakedBalance));
     console.log("Earned OTOKEN: ", divDec(res.accountEarnedOTOKEN));
-  });
-
-  it("NFT Balances", async function () {
-    console.log("******************************************************");
-    console.log("Multisig NFTs", await ve.connect(user0).balanceOf(MULTISIG));
-    console.log(
-      "Multisig Amount",
-      divDec(await ve.connect(user0).balanceOfNFT(ID))
-    );
-    console.log();
-    console.log(
-      "Plugin0 NFTs",
-      await ve.connect(user0).balanceOf(plugin0.address)
-    );
-    console.log(
-      "Plugin1 NFTs",
-      await ve.connect(user0).balanceOf(plugin1.address)
-    );
   });
 });
