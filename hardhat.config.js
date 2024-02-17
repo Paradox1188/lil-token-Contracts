@@ -59,11 +59,11 @@ module.exports = {
       // }
       // ***********************************
       // ******* base plugin testing *******
-      chainId: 8453,
-      forking: {
-        url: "https://mainnet.base.org",
-        blockNumber: 7253780,
-      },
+      // chainId: 8453,
+      // forking: {
+      //   url: "https://mainnet.base.org",
+      //   blockNumber: 7253780,
+      // },
       // ***********************************
     },
   },
@@ -72,7 +72,7 @@ module.exports = {
   },
   paths: {
     sources: "./contracts",
-    tests: "./tests/base",
+    tests: "./tests/pixel-game",
     cache: "./cache",
     artifacts: "./artifacts",
   },
