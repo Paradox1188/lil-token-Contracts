@@ -11,6 +11,10 @@ interface IBGT {
     function redeem(address from, address receiver, uint256 amount) external;
 }
 
+interface IWBERA {
+    function deposit() external payable;
+}
+
 interface IRewarder {
     function withdrawAllDepositorRewards(address receiver) external;
 }
@@ -21,6 +25,7 @@ contract BexPairPlugin is Plugin {
     /*----------  CONSTANTS  --------------------------------------------*/
 
     address public constant BGT = 0x09E585D2bdEb5ecf90ADE67dCE1125070D2714a3;
+    address public constant WBERA = 0x5806E416dA447b267cEA759358cF22Cc41FAE80F;
     address public constant BANK = 0x4381dC2aB14285160c808659aEe005D51255adD7;
     address public constant REWARDER = 0x55684e2cA2bace0aDc512C1AFF880b15b8eA7214;
 
@@ -59,13 +64,13 @@ contract BexPairPlugin is Plugin {
         IRewarder(REWARDER).withdrawAllDepositorRewards(address(this));
         address bribe = getBribe();
         uint256 duration = IBribe(bribe).DURATION();
-        address token = getBribeTokens()[0];
         uint256 balance = IBank(BANK).getBalance(address(this), "abgt");
         if (balance > duration) {
             IBGT(BGT).redeem(address(this), address(this), balance);
-            IERC20(token).safeApprove(bribe, 0);
-            IERC20(token).safeApprove(bribe, balance);
-            IBribe(bribe).notifyRewardAmount(token, balance);
+            IWBERA(WBERA).deposit{value: balance}();
+            IERC20(WBERA).safeApprove(bribe, 0);
+            IERC20(WBERA).safeApprove(bribe, balance);
+            IBribe(bribe).notifyRewardAmount(WBERA, balance);
         }
     }
 

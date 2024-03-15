@@ -59,16 +59,16 @@ module.exports = {
       // }
       // ***********************************
       // ******* base plugin testing *******
-      // chainId: 8453,
-      // forking: {
-      //   url: "https://mainnet.base.org",
-      //   blockNumber: 7253780,
-      // },
-      // ******* bera plugin testing *******
-      chainId: 2061,
+      chainId: 8453,
       forking: {
-        url: "https://rpc.berachain-internal.com/",
+        url: "https://mainnet.base.org",
+        blockNumber: 11872260,
       },
+      // ******* bera plugin testing *******
+      // chainId: 2061,
+      // forking: {
+      //   url: "https://rpc.berachain-internal.com/",
+      // },
       // ***********************************
     },
   },
