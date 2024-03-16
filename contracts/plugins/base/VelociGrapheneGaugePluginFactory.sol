@@ -4,14 +4,6 @@ pragma solidity 0.8.19;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import 'contracts/Plugin.sol';
 
-interface IVelociLP {
-    function tokens() external view returns (address, address);
-}
-
-interface IRouter {
-    function isPair(address _pool) external view returns (bool);
-}
-
 interface IVelociVoter {
     function gauges(address _lpToken) external view returns (address);
 }
@@ -129,11 +121,10 @@ contract VelociGaugePlugin is Plugin {
 }
 
 
-contract VelociGaugePluginFactory is Ownable {
+contract VelociGrapheneGaugePluginFactory is Ownable {
 
     address public constant BVM = 0xd386a121991E51Eab5e3433Bf5B1cF4C8884b47a;
     address public constant OBVM = 0x762eb51D2e779EeEc9B239FFB0B2eC8262848f3E;
-    address public constant ROUTER = 0xE11b93B61f6291d35c5a2beA0A9fF169080160cF;
     address public constant VELOCI_VOTER = 0xab9B68c9e53c94D7c0949FB909E80e4a29F9134A;
     string public constant PROTOCOL = 'Velocimeter';
 
@@ -141,7 +132,6 @@ contract VelociGaugePluginFactory is Ownable {
 
     address public last_plugin;
 
-    error PluginFactory__NotPair();
     error PluginFactory__InvalidGauge();
 
     event Plugin__PluginCreated(address plugin);

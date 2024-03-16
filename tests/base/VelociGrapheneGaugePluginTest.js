@@ -73,28 +73,28 @@ describe.only("base: Velocimeter gauge Testing", function () {
     response = await axios.get(OBVM_URL);
     const OBVM_ABI = JSON.parse(response.data.result);
     oBVM = new ethers.Contract(OBVM_ADDR, OBVM_ABI, provider);
-    await timer(1000);
+    await timer(10000);
     console.log("- oBVM Initialized");
 
     // WETH
     response = await axios.get(WETH_URL);
     const WETH_ABI = JSON.parse(response.data.result);
     WETH = new ethers.Contract(WETH_ADDR, WETH_ABI, provider);
-    await timer(1000);
+    await timer(10000);
     console.log("- WETH Initialized");
 
     // LP0
     response = await axios.get(LP0_URL);
     const LP0_ABI = JSON.parse(response.data.result);
     LP0 = new ethers.Contract(LP0_ADDR, LP0_ABI, provider);
-    await timer(1000);
+    await timer(10000);
     console.log("- LP0 Initialized");
 
     // LP0Gauge
     response = await axios.get(LP0_GAUGE_URL);
     const LP0_GAUGE_ABI = JSON.parse(response.data.result);
     LP0Gauge = new ethers.Contract(LP0_GAUGE, LP0_GAUGE_ABI, provider);
-    await timer(1000);
+    await timer(10000);
     console.log("- LP0Gauge Initialized");
 
     // initialize users
@@ -304,7 +304,7 @@ describe.only("base: Velocimeter gauge Testing", function () {
   it("First test", async function () {
     console.log("******************************************************");
   });
-  /*
+
   it("Impersonate LP0 holder and send to user0", async function () {
     console.log("******************************************************");
     await network.provider.request({
@@ -328,34 +328,6 @@ describe.only("base: Velocimeter gauge Testing", function () {
     );
   });
 
-  it("Impersonate LP1 holder and send to user0", async function () {
-    console.log("******************************************************");
-    await owner.sendTransaction({
-      to: LP1_HOLDER,
-      value: ethers.utils.parseEther("1.0"), // Sends exactly 1.0 ether
-    });
-
-    await network.provider.request({
-      method: "hardhat_impersonateAccount",
-      params: [LP1_HOLDER],
-    });
-    const signer = ethers.provider.getSigner(LP1_HOLDER);
-
-    await LP1.connect(signer).transfer(
-      user0.address,
-      await LP1.connect(owner).balanceOf(LP1_HOLDER)
-    );
-
-    console.log(
-      "Holder LP1 balance: ",
-      divDec(await LP1.connect(owner).balanceOf(LP1_HOLDER))
-    );
-    console.log(
-      "User0 LP1 balance: ",
-      divDec(await LP1.connect(owner).balanceOf(user0.address))
-    );
-  });
-
   it("User0 deposits in all plugins", async function () {
     console.log("******************************************************");
     await LP0.connect(user0).approve(
@@ -367,17 +339,6 @@ describe.only("base: Velocimeter gauge Testing", function () {
       .depositFor(
         user0.address,
         await LP0.connect(owner).balanceOf(user0.address)
-      );
-
-    await LP1.connect(user0).approve(
-      plugin1.address,
-      await LP1.connect(owner).balanceOf(user0.address)
-    );
-    await plugin1
-      .connect(user0)
-      .depositFor(
-        user0.address,
-        await LP1.connect(owner).balanceOf(user0.address)
       );
   });
 
@@ -423,9 +384,7 @@ describe.only("base: Velocimeter gauge Testing", function () {
 
   it("user1 votes on plugins", async function () {
     console.log("******************************************************");
-    await voter
-      .connect(user1)
-      .vote([plugin0.address, plugin1.address], [ten, ten]);
+    await voter.connect(user1).vote([plugin0.address], [ten]);
   });
 
   it("BondingCurveData, user0", async function () {
@@ -487,68 +446,9 @@ describe.only("base: Velocimeter gauge Testing", function () {
     console.log("Earned OTOKEN: ", divDec(res.accountEarnedOTOKEN));
   });
 
-  it("GaugeCardData, plugin1, user0", async function () {
-    console.log("******************************************************");
-    let res = await multicall.gaugeCardData(plugin1.address, user0.address);
-    console.log("INFORMATION");
-    console.log("Gauge: ", res.gauge);
-    console.log("Plugin: ", res.plugin);
-    console.log("Underlying: ", res.underlying);
-    console.log("Tokens in Underlying: ");
-    for (let i = 0; i < res.tokensInUnderlying.length; i++) {
-      console.log(" - ", res.tokensInUnderlying[i]);
-    }
-    console.log("Underlying Decimals: ", res.underlyingDecimals);
-    console.log("Is Alive: ", res.isAlive);
-    console.log();
-    console.log("GLOBAL DATA");
-    console.log("Protocol: ", res.protocol);
-    console.log("Symbol: ", res.symbol);
-    console.log("Price OTOKEN: $", divDec(res.priceOTOKEN));
-    console.log("Reward Per token: ", divDec(res.rewardPerToken));
-    console.log("Reward Per token: $", divDec(res.rewardPerTokenUSD));
-    console.log("Total Supply: ", divDec(res.totalSupply));
-    console.log("Voting Weight: ", divDec(res.votingWeight), "%");
-    console.log();
-    console.log("ACCOUNT DATA");
-    console.log("Balance Underlying: ", divDec(res.accountUnderlyingBalance));
-    console.log("Balance Deposited: ", divDec(res.accountStakedBalance));
-    console.log("Earned OTOKEN: ", divDec(res.accountEarnedOTOKEN));
-  });
-
   it("BribeCardData, plugin0, user1 ", async function () {
     console.log("******************************************************");
     let res = await multicall.bribeCardData(plugin0.address, user1.address);
-    console.log("INFORMATION");
-    console.log("Gauge: ", res.bribe);
-    console.log("Plugin: ", res.plugin);
-    console.log("Reward Tokens: ");
-    for (let i = 0; i < res.rewardTokens.length; i++) {
-      console.log(" - ", res.rewardTokens[i], res.rewardTokenDecimals[i]);
-    }
-    console.log("Is Alive: ", res.isAlive);
-    console.log();
-    console.log("GLOBAL DATA");
-    console.log("Protocol: ", res.protocol);
-    console.log("Symbol: ", res.symbol);
-    console.log("Voting Weight: ", divDec(res.voteWeight));
-    console.log("Voting percent: ", divDec(res.votePercent), "%");
-    console.log("Reward Per Token: ");
-    for (let i = 0; i < res.rewardsPerToken.length; i++) {
-      console.log(" - ", divDec(res.rewardsPerToken[i]));
-    }
-    console.log();
-    console.log("ACCOUNT DATA");
-    console.log("Account Votes: ", divDec(res.accountVote));
-    console.log("Earned Rewards: ");
-    for (let i = 0; i < res.accountRewardsEarned.length; i++) {
-      console.log(" - ", divDec(res.accountRewardsEarned[i]));
-    }
-  });
-
-  it("BribeCardData, plugin1, user1 ", async function () {
-    console.log("******************************************************");
-    let res = await multicall.bribeCardData(plugin1.address, user1.address);
     console.log("INFORMATION");
     console.log("Gauge: ", res.bribe);
     console.log("Plugin: ", res.plugin);
@@ -611,33 +511,24 @@ describe.only("base: Velocimeter gauge Testing", function () {
     console.log("Earned OTOKEN: ", divDec(res.accountEarnedOTOKEN));
   });
 
-  it("GaugeCardData, plugin1, user0", async function () {
+  it("LPGauge data ", async function () {
     console.log("******************************************************");
-    let res = await multicall.gaugeCardData(plugin1.address, user0.address);
-    console.log("INFORMATION");
-    console.log("Gauge: ", res.gauge);
-    console.log("Plugin: ", res.plugin);
-    console.log("Underlying: ", res.underlying);
-    console.log("Tokens in Underlying: ");
-    for (let i = 0; i < res.tokensInUnderlying.length; i++) {
-      console.log(" - ", res.tokensInUnderlying[i]);
-    }
-    console.log("Underlying Decimals: ", res.underlyingDecimals);
-    console.log("Is Alive: ", res.isAlive);
+    console.log("LP0Gauge");
+    console.log(
+      "Claimable oBVM: ",
+      await LP0Gauge.connect(owner).earned(BVM_ADDR, plugin0.address)
+    );
+    console.log(
+      "Claimable OP: ",
+      await LP0Gauge.connect(owner).earned(OP, plugin0.address)
+    );
     console.log();
-    console.log("GLOBAL DATA");
-    console.log("Protocol: ", res.protocol);
-    console.log("Symbol: ", res.symbol);
-    console.log("Price OTOKEN: $", divDec(res.priceOTOKEN));
-    console.log("Reward Per token: ", divDec(res.rewardPerToken));
-    console.log("Reward Per token: $", divDec(res.rewardPerTokenUSD));
-    console.log("Total Supply: ", divDec(res.totalSupply));
-    console.log("Voting Weight: ", divDec(res.votingWeight), "%");
-    console.log();
-    console.log("ACCOUNT DATA");
-    console.log("Balance Underlying: ", divDec(res.accountUnderlyingBalance));
-    console.log("Balance Deposited: ", divDec(res.accountStakedBalance));
-    console.log("Earned OTOKEN: ", divDec(res.accountEarnedOTOKEN));
+  });
+
+  it("Forward time by 1 days", async function () {
+    console.log("******************************************************");
+    await network.provider.send("evm_increaseTime", [24 * 3600]);
+    await network.provider.send("evm_mine");
   });
 
   it("LPGauge data ", async function () {
@@ -648,71 +539,22 @@ describe.only("base: Velocimeter gauge Testing", function () {
       await LP0Gauge.connect(owner).earned(BVM_ADDR, plugin0.address)
     );
     console.log(
-      "Claimable WETH: ",
-      await LP0Gauge.connect(owner).earned(WETH_ADDR, plugin0.address)
+      "Claimable OP: ",
+      await LP0Gauge.connect(owner).earned(OP, plugin0.address)
     );
     console.log();
-    console.log("LP1Gauge");
-    console.log(
-      "Claimable WETH: ",
-      await LP1Gauge.connect(owner).earned(WETH_ADDR, plugin1.address)
-    );
-    console.log(
-      "Claimable oSMOOTH: ",
-      await LP1Gauge.connect(owner).earned(OSMOOTH_ADDR, plugin1.address)
-    );
-    console.log(
-      "Claimable oBVM: ",
-      await LP1Gauge.connect(owner).earned(BVM_ADDR, plugin1.address)
-    );
-  });
-
-  it("Forward time by 1 days", async function () {
-    console.log("******************************************************");
-    await network.provider.send("evm_increaseTime", [24 * 3600]);
-    await network.provider.send("evm_mine");
   });
 
   it("Owner calls distribute", async function () {
     console.log("******************************************************");
     await voter.connect(owner).distro();
     await fees.distribute();
-    await voter.distributeToBribes([plugin0.address, plugin1.address]);
+    await voter.distributeToBribes([plugin0.address]);
   });
 
   it("BribeCardData, plugin0, user1 ", async function () {
     console.log("******************************************************");
     let res = await multicall.bribeCardData(plugin0.address, user1.address);
-    console.log("INFORMATION");
-    console.log("Gauge: ", res.bribe);
-    console.log("Plugin: ", res.plugin);
-    console.log("Reward Tokens: ");
-    for (let i = 0; i < res.rewardTokens.length; i++) {
-      console.log(" - ", res.rewardTokens[i], res.rewardTokenDecimals[i]);
-    }
-    console.log("Is Alive: ", res.isAlive);
-    console.log();
-    console.log("GLOBAL DATA");
-    console.log("Protocol: ", res.protocol);
-    console.log("Symbol: ", res.symbol);
-    console.log("Voting Weight: ", divDec(res.voteWeight));
-    console.log("Voting percent: ", divDec(res.votePercent), "%");
-    console.log("Reward Per Token: ");
-    for (let i = 0; i < res.rewardsPerToken.length; i++) {
-      console.log(" - ", divDec(res.rewardsPerToken[i]));
-    }
-    console.log();
-    console.log("ACCOUNT DATA");
-    console.log("Account Votes: ", divDec(res.accountVote));
-    console.log("Earned Rewards: ");
-    for (let i = 0; i < res.accountRewardsEarned.length; i++) {
-      console.log(" - ", divDec(res.accountRewardsEarned[i]));
-    }
-  });
-
-  it("BribeCardData, plugin1, user1 ", async function () {
-    console.log("******************************************************");
-    let res = await multicall.bribeCardData(plugin1.address, user1.address);
     console.log("INFORMATION");
     console.log("Gauge: ", res.bribe);
     console.log("Plugin: ", res.plugin);
@@ -749,36 +591,6 @@ describe.only("base: Velocimeter gauge Testing", function () {
   it("BribeCardData, plugin0, user1 ", async function () {
     console.log("******************************************************");
     let res = await multicall.bribeCardData(plugin0.address, user1.address);
-    console.log("INFORMATION");
-    console.log("Gauge: ", res.bribe);
-    console.log("Plugin: ", res.plugin);
-    console.log("Reward Tokens: ");
-    for (let i = 0; i < res.rewardTokens.length; i++) {
-      console.log(" - ", res.rewardTokens[i], res.rewardTokenDecimals[i]);
-    }
-    console.log("Is Alive: ", res.isAlive);
-    console.log();
-    console.log("GLOBAL DATA");
-    console.log("Protocol: ", res.protocol);
-    console.log("Symbol: ", res.symbol);
-    console.log("Voting Weight: ", divDec(res.voteWeight));
-    console.log("Voting percent: ", divDec(res.votePercent), "%");
-    console.log("Reward Per Token: ");
-    for (let i = 0; i < res.rewardsPerToken.length; i++) {
-      console.log(" - ", divDec(res.rewardsPerToken[i]));
-    }
-    console.log();
-    console.log("ACCOUNT DATA");
-    console.log("Account Votes: ", divDec(res.accountVote));
-    console.log("Earned Rewards: ");
-    for (let i = 0; i < res.accountRewardsEarned.length; i++) {
-      console.log(" - ", divDec(res.accountRewardsEarned[i]));
-    }
-  });
-
-  it("BribeCardData, plugin1, user1 ", async function () {
-    console.log("******************************************************");
-    let res = await multicall.bribeCardData(plugin1.address, user1.address);
     console.log("INFORMATION");
     console.log("Gauge: ", res.bribe);
     console.log("Plugin: ", res.plugin);
@@ -814,12 +626,6 @@ describe.only("base: Velocimeter gauge Testing", function () {
         user0.address,
         await plugin0.connect(owner).balanceOf(user0.address)
       );
-    await plugin1
-      .connect(user0)
-      .withdrawTo(
-        user0.address,
-        await plugin1.connect(owner).balanceOf(user0.address)
-      );
   });
 
   it("GaugeCardData, plugin0, user0", async function () {
@@ -851,52 +657,11 @@ describe.only("base: Velocimeter gauge Testing", function () {
     console.log("Earned OTOKEN: ", divDec(res.accountEarnedOTOKEN));
   });
 
-  it("GaugeCardData, plugin1, user0", async function () {
-    console.log("******************************************************");
-    let res = await multicall.gaugeCardData(plugin1.address, user0.address);
-    console.log("INFORMATION");
-    console.log("Gauge: ", res.gauge);
-    console.log("Plugin: ", res.plugin);
-    console.log("Underlying: ", res.underlying);
-    console.log("Tokens in Underlying: ");
-    for (let i = 0; i < res.tokensInUnderlying.length; i++) {
-      console.log(" - ", res.tokensInUnderlying[i]);
-    }
-    console.log("Underlying Decimals: ", res.underlyingDecimals);
-    console.log("Is Alive: ", res.isAlive);
-    console.log();
-    console.log("GLOBAL DATA");
-    console.log("Protocol: ", res.protocol);
-    console.log("Symbol: ", res.symbol);
-    console.log("Price OTOKEN: $", divDec(res.priceOTOKEN));
-    console.log("Reward Per token: ", divDec(res.rewardPerToken));
-    console.log("Reward Per token: $", divDec(res.rewardPerTokenUSD));
-    console.log("Total Supply: ", divDec(res.totalSupply));
-    console.log("Voting Weight: ", divDec(res.votingWeight), "%");
-    console.log();
-    console.log("ACCOUNT DATA");
-    console.log("Balance Underlying: ", divDec(res.accountUnderlyingBalance));
-    console.log("Balance Deposited: ", divDec(res.accountStakedBalance));
-    console.log("Earned OTOKEN: ", divDec(res.accountEarnedOTOKEN));
-  });
-
-  it("Owner sets gaugeRewards in plugin1 to WETH, BVM, oBVM, oSMOOTH", async function () {
-    console.log("******************************************************");
-    await pluginFactory
-      .connect(owner)
-      .setGaugeRewards(plugin1.address, [
-        WETH_ADDR,
-        BVM_ADDR,
-        OSMOOTH_ADDR,
-        OBVM_ADDR,
-      ]);
-  });
-
   it("Owner calls distribute", async function () {
     console.log("******************************************************");
     await voter.connect(owner).distro();
     await fees.distribute();
-    await voter.distributeToBribes([plugin0.address, plugin1.address]);
+    await voter.distributeToBribes([plugin0.address]);
   });
 
   it("Forward time by 7 days", async function () {
@@ -917,24 +682,5 @@ describe.only("base: Velocimeter gauge Testing", function () {
       await LP0Gauge.connect(owner).earned(WETH_ADDR, plugin0.address)
     );
     console.log();
-    console.log("LP1Gauge");
-    console.log(
-      "Claimable WETH: ",
-      await LP1Gauge.connect(owner).earned(WETH_ADDR, plugin1.address)
-    );
-    console.log(
-      "Claimable oSMOOTH: ",
-      await LP1Gauge.connect(owner).earned(OSMOOTH_ADDR, plugin1.address)
-    );
-    console.log(
-      "Claimable BVM: ",
-      await LP1Gauge.connect(owner).earned(BVM_ADDR, plugin1.address)
-    );
-    console.log(
-      "Claimable oBVM: ",
-      await LP1Gauge.connect(owner).earned(OBVM_ADDR, plugin1.address)
-    );
   });
-
-  */
 });
